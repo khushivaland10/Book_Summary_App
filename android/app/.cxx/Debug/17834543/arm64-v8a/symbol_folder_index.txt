@@ -1,0 +1,1 @@
+E:\Khushi\book-summary-app\android\app\build\intermediates\cxx\Debug\17834543\obj\arm64-v8a
