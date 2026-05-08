@@ -16,30 +16,30 @@ export type AppTheme = {
 export const lightTheme: AppTheme = {
   mode: 'light',
   colors: {
-    bg: '#f8f5f2',
+    bg: '#f7faff',
     card: '#ffffff',
-    text: '#130f0c',
-    muted: '#7b7169',
-    border: '#e6ddd5',
-    primary: '#df880e',
-    primarySoft: '#fff1cf',
-    cream: '#fff7df',
-    success: '#20a646'
+    text: '#101828',
+    muted: '#667085',
+    border: '#e4eaf3',
+    primary: '#2563eb',
+    primarySoft: '#dbeafe',
+    cream: '#eef6ff',
+    success: '#16a34a'
   }
 };
 
 export const darkTheme: AppTheme = {
   mode: 'dark',
   colors: {
-    bg: '#171310',
-    card: '#231d18',
-    text: '#fff8ee',
-    muted: '#c2b4a9',
-    border: '#51443b',
-    primary: '#f3a51f',
-    primarySoft: '#3b2a11',
-    cream: '#2d251b',
-    success: '#53d779'
+    bg: '#0b1220',
+    card: '#111827',
+    text: '#f8fafc',
+    muted: '#a7b2c4',
+    border: '#243247',
+    primary: '#60a5fa',
+    primarySoft: '#172a46',
+    cream: '#142235',
+    success: '#4ade80'
   }
 };
 

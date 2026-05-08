@@ -1,7 +1,5 @@
-import NetInfo from '@react-native-community/netinfo';
-import { api } from './api';
 import { getJson, setJson } from '../database/mmkv';
-import { Bookmark, Chapter, Note, ProgressMap } from '../types';
+import { Bookmark, Chapter, Note, ProgressMap, RecentView } from '../types';
 import { seedChapters } from '../data/seed';
 
 const keys = {
@@ -9,6 +7,7 @@ const keys = {
   bookmarks: 'library.bookmarks',
   notes: 'library.notes',
   progress: 'library.progress',
+  recentViews: 'library.recentViews',
   lastSync: 'library.lastSync'
 };
 
@@ -27,7 +26,8 @@ export const offlineStore = {
       chapters: shouldUseSeed ? seedChapters : cachedChapters,
       bookmarks: getJson<Bookmark[]>(keys.bookmarks, []),
       notes: getJson<Note[]>(keys.notes, []),
-      progress: getJson<ProgressMap>(keys.progress, {})
+      progress: getJson<ProgressMap>(keys.progress, {}),
+      recentViews: getJson<RecentView[]>(keys.recentViews, [])
     };
   },
   saveLibrary(chapters: Chapter[]) {
@@ -43,22 +43,12 @@ export const offlineStore = {
   saveProgress(progress: ProgressMap) {
     setJson(keys.progress, progress);
   },
+  saveRecentViews(recentViews: RecentView[]) {
+    setJson(keys.recentViews, recentViews);
+  },
   async sync() {
-    const net = await NetInfo.fetch();
-    if (!net.isConnected) return this.load().chapters;
-
-    const local = this.load();
-    const [{ data: chapters }] = await Promise.all([
-      api.get<Chapter[]>('/chapters'),
-      api.post('/sync', {
-        bookmarks: local.bookmarks,
-        notes: local.notes.filter(note => note.dirty),
-        progress: local.progress
-      })
-    ]);
-
-    this.saveLibrary(chapters);
-    this.saveNotes(local.notes.map(note => ({ ...note, dirty: false })));
-    return chapters;
+    // Standalone offline app - no backend sync needed
+    // Just return locally stored chapters
+    return this.load().chapters;
   }
 };

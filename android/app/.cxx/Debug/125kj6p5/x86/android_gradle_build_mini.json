@@ -1,0 +1,92 @@
+{
+  "buildFiles": [
+    "E:\\Khushi\\Book_Summary_App\\node_modules\\react-native-mmkv\\android\\build\\generated\\source\\codegen\\jni\\CMakeLists.txt",
+    "E:\\Khushi\\Book_Summary_App\\node_modules\\react-native-mmkv\\android\\CMakeLists.txt",
+    "E:\\Khushi\\Book_Summary_App\\node_modules\\react-native-mmkv\\MMKV\\Core\\CMakeLists.txt",
+    "E:\\Khushi\\Book_Summary_App\\node_modules\\react-native-reanimated\\android\\build\\generated\\source\\codegen\\jni\\CMakeLists.txt",
+    "E:\\Khushi\\Book_Summary_App\\node_modules\\react-native-safe-area-context\\android\\src\\main\\jni\\CMakeLists.txt",
+    "E:\\Khushi\\Book_Summary_App\\node_modules\\react-native-screens\\android\\src\\main\\jni\\CMakeLists.txt",
+    "E:\\Khushi\\Book_Summary_App\\node_modules\\react-native-vector-icons\\android\\build\\generated\\source\\codegen\\jni\\CMakeLists.txt",
+    "E:\\Khushi\\Book_Summary_App\\node_modules\\react-native\\ReactAndroid\\cmake-utils\\default-app-setup\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\Mehul\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "E:\\Khushi\\Book_Summary_App\\android\\app\\.cxx\\Debug\\125kj6p5\\x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\Mehul\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "E:\\Khushi\\Book_Summary_App\\android\\app\\.cxx\\Debug\\125kj6p5\\x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "react_codegen_RNVectorIconsSpec::@479809fae146501fd34d": {
+      "artifactName": "react_codegen_RNVectorIconsSpec",
+      "abi": "x86",
+      "runtimeFiles": []
+    },
+    "react_codegen_rnreanimated::@8afabad14bfffa3f8b9a": {
+      "artifactName": "react_codegen_rnreanimated",
+      "abi": "x86",
+      "runtimeFiles": []
+    },
+    "react_codegen_safeareacontext::@7984cd80db47aa7b952a": {
+      "artifactName": "react_codegen_safeareacontext",
+      "abi": "x86",
+      "output": "E:\\Khushi\\Book_Summary_App\\android\\app\\build\\intermediates\\cxx\\Debug\\125kj6p5\\obj\\x86\\libreact_codegen_safeareacontext.so",
+      "runtimeFiles": [
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\ecaf85af74491e145fd7c1a1474ff70a\\transformed\\fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.x86\\libfbjni.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\5bfdf811371c923347fe339a9da5996d\\transformed\\react-android-0.76.9-debug\\prefab\\modules\\jsi\\libs\\android.x86\\libjsi.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\5bfdf811371c923347fe339a9da5996d\\transformed\\react-android-0.76.9-debug\\prefab\\modules\\reactnative\\libs\\android.x86\\libreactnative.so"
+      ]
+    },
+    "core::@1b9a7d546b295b7d0867": {
+      "artifactName": "core",
+      "abi": "x86",
+      "output": "E:\\Khushi\\Book_Summary_App\\android\\app\\.cxx\\Debug\\125kj6p5\\x86\\RNMmkvSpec_cxxmodule_autolinked_build\\core\\libcore.a",
+      "runtimeFiles": []
+    },
+    "react-native-mmkv::@4ae6a1e65d3e68ba0197": {
+      "artifactName": "react-native-mmkv",
+      "abi": "x86",
+      "output": "E:\\Khushi\\Book_Summary_App\\android\\app\\build\\intermediates\\cxx\\Debug\\125kj6p5\\obj\\x86\\libreact-native-mmkv.so",
+      "runtimeFiles": [
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\ecaf85af74491e145fd7c1a1474ff70a\\transformed\\fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.x86\\libfbjni.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\5bfdf811371c923347fe339a9da5996d\\transformed\\react-android-0.76.9-debug\\prefab\\modules\\jsi\\libs\\android.x86\\libjsi.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\5bfdf811371c923347fe339a9da5996d\\transformed\\react-android-0.76.9-debug\\prefab\\modules\\reactnative\\libs\\android.x86\\libreactnative.so"
+      ]
+    },
+    "react_codegen_rnscreens::@25bcbd507e98d3a854ad": {
+      "artifactName": "react_codegen_rnscreens",
+      "abi": "x86",
+      "output": "E:\\Khushi\\Book_Summary_App\\android\\app\\build\\intermediates\\cxx\\Debug\\125kj6p5\\obj\\x86\\libreact_codegen_rnscreens.so",
+      "runtimeFiles": [
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\5bfdf811371c923347fe339a9da5996d\\transformed\\react-android-0.76.9-debug\\prefab\\modules\\reactnative\\libs\\android.x86\\libreactnative.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\5bfdf811371c923347fe339a9da5996d\\transformed\\react-android-0.76.9-debug\\prefab\\modules\\jsi\\libs\\android.x86\\libjsi.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\ecaf85af74491e145fd7c1a1474ff70a\\transformed\\fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.x86\\libfbjni.so"
+      ]
+    },
+    "appmodules::@6890427a1f51a3e7e1df": {
+      "artifactName": "appmodules",
+      "abi": "x86",
+      "output": "E:\\Khushi\\Book_Summary_App\\android\\app\\build\\intermediates\\cxx\\Debug\\125kj6p5\\obj\\x86\\libappmodules.so",
+      "runtimeFiles": [
+        "E:\\Khushi\\Book_Summary_App\\android\\app\\build\\intermediates\\cxx\\Debug\\125kj6p5\\obj\\x86\\libreact-native-mmkv.so",
+        "E:\\Khushi\\Book_Summary_App\\android\\app\\build\\intermediates\\cxx\\Debug\\125kj6p5\\obj\\x86\\libreact_codegen_safeareacontext.so",
+        "E:\\Khushi\\Book_Summary_App\\android\\app\\build\\intermediates\\cxx\\Debug\\125kj6p5\\obj\\x86\\libreact_codegen_rnscreens.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\ecaf85af74491e145fd7c1a1474ff70a\\transformed\\fbjni-0.6.0\\prefab\\modules\\fbjni\\libs\\android.x86\\libfbjni.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\5bfdf811371c923347fe339a9da5996d\\transformed\\react-android-0.76.9-debug\\prefab\\modules\\jsi\\libs\\android.x86\\libjsi.so",
+        "E:\\.gradle\\caches\\8.10.2\\transforms\\5bfdf811371c923347fe339a9da5996d\\transformed\\react-android-0.76.9-debug\\prefab\\modules\\reactnative\\libs\\android.x86\\libreactnative.so"
+      ]
+    },
+    "react_codegen_RNMmkvSpec::@7541eabbae598da31a69": {
+      "artifactName": "react_codegen_RNMmkvSpec",
+      "abi": "x86",
+      "runtimeFiles": []
+    }
+  }
+}

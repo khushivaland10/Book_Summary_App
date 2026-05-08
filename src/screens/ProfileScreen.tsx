@@ -11,44 +11,65 @@ import { darkTheme, lightTheme } from '../theme';
 
 export function ProfileScreen() {
   const dispatch = useAppDispatch();
-  const theme = useAppSelector(state => (state.preferences.theme === 'dark' ? darkTheme : lightTheme));
+  const mode = useAppSelector(state => state.preferences.theme);
+  const theme = mode === 'dark' ? darkTheme : lightTheme;
   const user = useAppSelector(state => state.auth.user);
   const { chapters, bookmarks, notes, progress } = useAppSelector(state => state.library);
   const completed = Object.values(progress).filter(item => item.completed).length;
-  const minutes = chapters.filter(ch => progress[ch._id]?.completed).reduce((sum, ch) => sum + ch.minutes, 0);
+  const today = new Date().toDateString();
+  const readToday = Object.values(progress).filter(item => item.completed && new Date(item.updatedAt).toDateString() === today).length;
+  const streak = completed > 0 ? Math.max(1, readToday || 1) : 0;
+  const minutes = chapters.filter(chapter => progress[chapter._id]?.completed).reduce((sum, chapter) => sum + chapter.minutes, 0);
   const percent = chapters.length ? completed / chapters.length : 0;
 
   return (
     <Screen>
       <View style={styles.header}>
         <Text weight="serif" style={styles.title}>Profile</Text>
-        <Pressable onPress={() => dispatch(toggleTheme())} style={[styles.theme, { backgroundColor: theme.colors.card }]}><Ionicons name="moon-outline" size={18} color={theme.colors.muted} /></Pressable>
+        <Pressable onPress={() => dispatch(toggleTheme())} style={[styles.theme, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
+          <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={18} color={theme.colors.primary} />
+        </Pressable>
       </View>
+
       <View style={[styles.profile, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
-        <View style={[styles.avatar, { backgroundColor: theme.colors.primarySoft }]}><Ionicons name="person-outline" color={theme.colors.primary} size={26} /></View>
+        <View style={[styles.avatar, { backgroundColor: theme.colors.primarySoft }]}>
+          <Ionicons name="person-outline" color={theme.colors.primary} size={26} />
+        </View>
         <View style={{ flex: 1 }}>
-          <Text weight="serif" style={{ fontSize: 18 }}>{user?.name}</Text>
+          <Text weight="serif" style={{ fontSize: 18 }}>{user?.name || 'Reader'}</Text>
           <Text style={{ color: theme.colors.muted, fontSize: 12 }}>{user?.email}</Text>
         </View>
         <ProgressRing percent={percent} />
       </View>
+
+      <View style={[styles.streak, { backgroundColor: theme.colors.cream, borderColor: theme.colors.border }]}>
+        <Ionicons name="flame-outline" size={22} color={theme.colors.primary} />
+        <View style={{ flex: 1 }}>
+          <Text weight="bold" style={{ color: theme.colors.primary }}>{streak} day streak</Text>
+          <Text style={{ color: theme.colors.muted }}>You read {readToday} chapters today</Text>
+        </View>
+      </View>
+
       <View style={styles.grid}>
         <Metric icon="book-outline" value={completed} label="Chapters Read" />
-        <Metric icon="star-outline" value={notes.length} label="Notes Taken" />
-        <Metric icon="checkmark-circle-outline" value={bookmarks.length} label="Bookmarks" />
-        <Metric icon="trending-up-outline" value={minutes} label="Mins Read" />
+        <Metric icon="create-outline" value={notes.length} label="Notes Taken" />
+        <Metric icon="bookmark-outline" value={bookmarks.length} label="Bookmarks" />
+        <Metric icon="time-outline" value={minutes} label="Minutes Read" />
       </View>
+
       <View style={[styles.progress, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
-        <View style={styles.row}><Text weight="bold">🏆 Reading Progress</Text><Text style={{ color: theme.colors.primary }}>{completed}/{chapters.length}</Text></View>
-        <View style={[styles.track, { backgroundColor: theme.colors.border }]}><View style={[styles.fill, { width: `${Math.max(10, percent * 100)}%`, backgroundColor: theme.colors.primary }]} /></View>
+        <View style={styles.row}>
+          <Text weight="bold">Reading Progress</Text>
+          <Text style={{ color: theme.colors.primary }}>{completed}/{chapters.length}</Text>
+        </View>
+        <View style={[styles.track, { backgroundColor: theme.colors.border }]}>
+          <View style={[styles.fill, { width: `${percent * 100}%`, backgroundColor: theme.colors.primary }]} />
+        </View>
         <Text style={{ color: theme.colors.muted }}>{chapters.length - completed} chapters remaining</Text>
       </View>
-      <View style={[styles.insight, { backgroundColor: theme.colors.cream, borderColor: theme.colors.border }]}>
-        <View style={styles.row}><Text weight="bold" style={{ color: theme.colors.primary }}>⚡ YOUR AI INSIGHT</Text><Text style={{ color: theme.colors.primary }}>Refresh</Text></View>
-        <Text style={{ color: theme.colors.muted, marginTop: 14 }}>Generate my personalized insight →</Text>
-      </View>
+
       <Pressable onPress={() => dispatch(logout())} style={[styles.signout, { borderColor: theme.colors.border }]}>
-        <Text style={{ color: theme.colors.muted }}>Sign Out</Text>
+        <Text style={{ color: theme.colors.muted }}>Logout</Text>
       </Pressable>
     </Screen>
   );
@@ -67,16 +88,16 @@ function Metric({ icon, value, label }: { icon: string; value: number; label: st
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  title: { fontSize: 27, marginBottom: 18 },
-  theme: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  profile: { borderWidth: 1, borderRadius: 14, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 16 },
+  title: { fontSize: 28, marginBottom: 18 },
+  theme: { width: 38, height: 38, borderWidth: 1, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
+  profile: { borderWidth: 1, borderRadius: 16, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 14 },
   avatar: { width: 54, height: 54, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  streak: { borderWidth: 1, borderRadius: 14, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 16 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  metric: { width: '48%', borderWidth: 1, borderRadius: 13, padding: 16 },
-  progress: { borderWidth: 1, borderRadius: 13, padding: 16, marginTop: 18 },
+  metric: { width: '48%', borderWidth: 1, borderRadius: 14, padding: 16 },
+  progress: { borderWidth: 1, borderRadius: 14, padding: 16, marginTop: 18 },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   track: { height: 8, borderRadius: 10, marginVertical: 10 },
   fill: { height: 8, borderRadius: 10 },
-  insight: { borderWidth: 1, borderRadius: 13, padding: 16, marginTop: 18 },
-  signout: { borderWidth: 1, borderRadius: 13, padding: 16, alignItems: 'center', marginTop: 22 }
+  signout: { borderWidth: 1, borderRadius: 14, padding: 16, alignItems: 'center', marginTop: 22 }
 });

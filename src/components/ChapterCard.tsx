@@ -9,9 +9,10 @@ import { Text } from './Text';
 export function ChapterCard({ chapter, onPress, compact = false }: { chapter: Chapter; onPress: () => void; compact?: boolean }) {
   const mode = useAppSelector(state => state.preferences.theme);
   const theme = mode === 'dark' ? darkTheme : lightTheme;
+  const cardBackground = compact || mode === 'dark' ? theme.colors.card : chapter.accent;
 
   return (
-    <Pressable onPress={onPress} style={[styles.card, { backgroundColor: compact ? theme.colors.card : chapter.accent, borderColor: theme.colors.border }, compact && styles.compact]}>
+    <Pressable onPress={onPress} style={[styles.card, { backgroundColor: cardBackground, borderColor: theme.colors.border }, compact && styles.compact]}>
       <Ionicons name={chapter.icon} size={compact ? 24 : 30} color={theme.colors.primary} />
       <View style={styles.body}>
         <Text style={[styles.kicker, { color: theme.colors.muted }]}>CHAPTER {chapter.chapterNumber}</Text>

@@ -6,6 +6,7 @@ import { useAppSelector } from '../hooks/redux';
 import { AuthScreen } from '../screens/AuthScreen';
 import { TabsNavigator } from './TabsNavigator';
 import { ReaderScreen } from '../screens/ReaderScreen';
+import { ChaptersScreen } from '../screens/ChaptersScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -19,6 +20,7 @@ export function RootNavigator({ theme }: { theme: AppTheme }) {
       ) : (
         <>
           <Stack.Screen name="MainTabs" component={TabsNavigator} />
+          <Stack.Screen name="Chapters" component={ChaptersScreen} />
           <Stack.Screen name="Reader" component={ReaderScreen} />
         </>
       )}

@@ -28,4 +28,9 @@ export type Note = {
   dirty?: boolean;
 };
 
+export type RecentView = {
+  chapterId: string;
+  viewedAt: string;
+};
+
 export type ProgressMap = Record<string, { percent: number; completed: boolean; updatedAt: string }>;

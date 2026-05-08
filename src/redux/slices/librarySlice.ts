@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { offlineStore } from '../../services/offlineSync';
-import { Bookmark, Chapter, Note, ProgressMap } from '../../types';
+import { Bookmark, Chapter, Note, ProgressMap, RecentView } from '../../types';
 
 type LibraryState = {
   chapters: Chapter[];
   bookmarks: Bookmark[];
   notes: Note[];
   progress: ProgressMap;
+  recentViews: RecentView[];
   syncing: boolean;
 };
 
@@ -45,6 +46,21 @@ const librarySlice = createSlice({
         updatedAt: new Date().toISOString()
       };
       offlineStore.saveProgress(state.progress);
+    },
+    markChapterViewed(state, action: PayloadAction<string>) {
+      const viewedAt = new Date().toISOString();
+      state.recentViews = [
+        { chapterId: action.payload, viewedAt },
+        ...state.recentViews.filter(item => item.chapterId !== action.payload)
+      ].slice(0, 6);
+
+      const existing = state.progress[action.payload];
+      if (!existing) {
+        state.progress[action.payload] = { percent: 0.25, completed: false, updatedAt: viewedAt };
+        offlineStore.saveProgress(state.progress);
+      }
+
+      offlineStore.saveRecentViews(state.recentViews);
     }
   },
   extraReducers: builder => {
@@ -65,5 +81,5 @@ const librarySlice = createSlice({
   }
 });
 
-export const { toggleBookmark, upsertNote, updateProgress } = librarySlice.actions;
+export const { toggleBookmark, upsertNote, updateProgress, markChapterViewed } = librarySlice.actions;
 export default librarySlice.reducer;

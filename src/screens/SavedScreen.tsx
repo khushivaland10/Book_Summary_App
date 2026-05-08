@@ -18,19 +18,20 @@ export function SavedScreen({ navigation }: Props) {
   const { chapters, bookmarks, notes } = useAppSelector(state => state.library);
   const theme = useAppSelector(state => (state.preferences.theme === 'dark' ? darkTheme : lightTheme));
   const saved = useMemo(() => chapters.filter(chapter => bookmarks.some(bookmark => bookmark.chapterId === chapter._id)), [chapters, bookmarks]);
+  const savedNotes = useMemo(() => notes.filter(note => note.body.trim()), [notes]);
 
   return (
-    <Screen scroll={false}>
+    <Screen>
       <Text weight="serif" style={styles.title}>Saved</Text>
       <View style={[styles.segment, { backgroundColor: theme.colors.border }]}>
         {(['bookmarks', 'notes'] as const).map(item => (
           <Pressable key={item} onPress={() => setTab(item)} style={[styles.segmentButton, tab === item && { backgroundColor: theme.colors.card }]}>
-            <Text weight="bold">{item === 'bookmarks' ? 'Bookmarks' : 'My Notes'}</Text>
+            <Text weight="bold">{item === 'bookmarks' ? `Bookmarks (${saved.length})` : `Notes (${savedNotes.length})`}</Text>
           </Pressable>
         ))}
       </View>
       {tab === 'bookmarks' && saved.length > 0 && saved.map(chapter => <ChapterCard key={chapter._id} compact chapter={chapter} onPress={() => navigation.navigate('Reader', { chapterId: chapter._id })} />)}
-      {tab === 'notes' && notes.map(note => {
+      {tab === 'notes' && savedNotes.map(note => {
         const chapter = chapters.find(item => item._id === note.chapterId);
         return (
           <Pressable key={note.id} style={[styles.note, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]} onPress={() => chapter && navigation.navigate('Reader', { chapterId: chapter._id })}>
@@ -39,11 +40,11 @@ export function SavedScreen({ navigation }: Props) {
           </Pressable>
         );
       })}
-      {((tab === 'bookmarks' && saved.length === 0) || (tab === 'notes' && notes.length === 0)) && (
-        <View style={styles.empty}>
+      {((tab === 'bookmarks' && saved.length === 0) || (tab === 'notes' && savedNotes.length === 0)) && (
+        <View style={[styles.empty, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
           <Ionicons name={tab === 'bookmarks' ? 'bookmark-outline' : 'create-outline'} size={44} color={theme.colors.border} />
           <Text style={{ color: theme.colors.muted }}>{tab === 'bookmarks' ? 'No bookmarks yet' : 'No notes yet'}</Text>
-          <Text style={{ color: theme.colors.muted, fontSize: 12 }}>Tap the icon while reading</Text>
+          <Text style={{ color: theme.colors.muted, fontSize: 12 }}>{tab === 'bookmarks' ? 'Save chapters from the reader.' : 'Write notes inside any chapter.'}</Text>
         </View>
       )}
     </Screen>
@@ -54,6 +55,6 @@ const styles = StyleSheet.create({
   title: { fontSize: 27, marginBottom: 18 },
   segment: { height: 42, borderRadius: 13, flexDirection: 'row', padding: 4, marginBottom: 28 },
   segmentButton: { flex: 1, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  empty: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
+  empty: { borderWidth: 1, borderRadius: 14, alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 42 },
   note: { borderWidth: 1, borderRadius: 12, padding: 16, marginBottom: 12 }
 });

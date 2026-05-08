@@ -7,7 +7,6 @@ import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { Screen } from '../components/Screen';
 import { Text } from '../components/Text';
 import { ChapterCard } from '../components/ChapterCard';
-import { ProgressRing } from '../components/ProgressRing';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { toggleTheme } from '../redux/slices/preferencesSlice';
 import { RootStackParamList, TabParamList } from '../navigation/types';
@@ -16,42 +15,62 @@ import { dailyQuotes } from '../data/seed';
 
 type Props = CompositeScreenProps<BottomTabScreenProps<TabParamList, 'Home'>, NativeStackScreenProps<RootStackParamList>>;
 
+const categories = ['Investing', 'Money Mindset', 'Productivity', 'Psychology'];
+
 export function HomeScreen({ navigation }: Props) {
   const dispatch = useAppDispatch();
-  const { chapters, bookmarks, progress } = useAppSelector(state => state.library);
+  const { chapters, bookmarks, progress, recentViews } = useAppSelector(state => state.library);
   const mode = useAppSelector(state => state.preferences.theme);
   const theme = mode === 'dark' ? darkTheme : lightTheme;
   const completed = Object.values(progress).filter(item => item.completed).length;
+  const today = new Date().toDateString();
+  const readToday = Object.values(progress).filter(item => item.completed && new Date(item.updatedAt).toDateString() === today).length;
   const current = chapters.find(ch => !progress[ch._id]?.completed) || chapters[0];
-  const percent = chapters.length ? completed / chapters.length : 0;
+  const recentChapters = recentViews
+    .map(view => chapters.find(chapter => chapter._id === view.chapterId))
+    .filter((chapter): chapter is NonNullable<typeof chapter> => Boolean(chapter))
+    .slice(0, 3);
 
   return (
     <Screen>
-      <View style={styles.hero}>
-        <View style={[styles.cover, { backgroundColor: theme.colors.primary }]}>
-          <Ionicons name="book-outline" size={28} color="#fff" />
+      <View style={styles.topBar}>
+        <View>
+          <Text style={[styles.kicker, { color: theme.colors.muted }]}>OFFLINE LIBRARY</Text>
+          <Text weight="serif" style={styles.pageTitle}>Book Summary</Text>
         </View>
-        <View style={styles.heroText}>
-          <Text style={[styles.kicker, { color: theme.colors.muted }]}>BOOK SUMMARY</Text>
-          <Text weight="serif" style={styles.title}>Rich Dad{'\n'}Poor Dad</Text>
-          <Text style={{ color: theme.colors.muted }}>Robert T. Kiyosaki</Text>
-          <Text style={{ color: theme.colors.primary }}>★★★★★ Bestseller</Text>
-        </View>
-        <Pressable onPress={() => dispatch(toggleTheme())} style={[styles.themeButton, { backgroundColor: theme.colors.card }]}>
-          <Ionicons name="moon-outline" size={18} color={theme.colors.muted} />
+        <Pressable onPress={() => dispatch(toggleTheme())} style={[styles.iconButton, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
+          <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={18} color={theme.colors.primary} />
         </Pressable>
-        <ProgressRing percent={percent} />
       </View>
 
+      <Pressable onPress={() => navigation.navigate('Chapters')} style={[styles.bookCard, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
+        <View style={[styles.cover, { backgroundColor: theme.colors.primary }]}>
+          <Ionicons name="book-outline" size={30} color="#fff" />
+        </View>
+        <View style={styles.bookBody}>
+          <Text style={[styles.kicker, { color: theme.colors.muted }]}>FEATURED BOOK</Text>
+          <Text weight="serif" style={styles.title}>Rich Dad Poor Dad</Text>
+          <Text style={{ color: theme.colors.muted }}>Robert T. Kiyosaki</Text>
+          <View style={styles.badges}>
+            <Badge icon="star" label="Bestseller" />
+            <Badge icon="cloud-done-outline" label="Offline available" />
+          </View>
+        </View>
+        <Ionicons name="chevron-forward" size={20} color={theme.colors.primary} />
+      </Pressable>
+
       <View style={styles.stats}>
-        <Stat icon="book-outline" value={chapters.length} label="Chapters" />
-        <Stat icon="checkbox-outline" value={completed} label="Completed" />
+        <Stat icon="flame-outline" value={Math.max(1, completed)} label={`${readToday} read today`} />
+        <Stat icon="download-outline" value={chapters.length} label="Downloaded" />
         <Stat icon="bookmark-outline" value={bookmarks.length} label="Saved" />
       </View>
 
       <View style={styles.sectionRow}>
         <Text weight="serif" style={styles.sectionTitle}>Continue Reading</Text>
-        <Text style={{ color: theme.colors.primary }}>All →</Text>
+        <Pressable onPress={() => navigation.navigate('Chapters')} style={styles.linkButton}>
+          <Text weight="bold" style={{ color: theme.colors.primary }}>All</Text>
+          <Ionicons name="arrow-forward" size={16} color={theme.colors.primary} />
+        </Pressable>
       </View>
       {current && <ChapterCard compact chapter={current} onPress={() => navigation.navigate('Reader', { chapterId: current._id })} />}
 
@@ -61,16 +80,33 @@ export function HomeScreen({ navigation }: Props) {
         <Text style={styles.quoteAuthor}>- Robert Kiyosaki</Text>
       </View>
 
-      <View style={[styles.tip, { backgroundColor: theme.colors.cream, borderColor: theme.colors.border }]}>
-        <Text style={[styles.kicker, { color: theme.colors.primary }]}>INVESTING</Text>
-        <Text>The market always goes up and down. The wealthy use downturns as buying opportunities.</Text>
+      <Text weight="serif" style={styles.sectionTitle}>Categories</Text>
+      <View style={styles.chips}>
+        {categories.map(category => (
+          <View key={category} style={[styles.chip, { backgroundColor: theme.colors.cream, borderColor: theme.colors.border }]}>
+            <Text style={{ color: theme.colors.primary }}>{category}</Text>
+          </View>
+        ))}
       </View>
 
       <View style={styles.sectionRow}>
-        <Text weight="serif" style={styles.sectionTitle}>Chapters</Text>
-        <Text style={{ color: theme.colors.primary }}>See all →</Text>
+        <Text weight="serif" style={styles.sectionTitle}>Chapters Preview</Text>
+        <Pressable onPress={() => navigation.navigate('Chapters')} style={styles.linkButton}>
+          <Text weight="bold" style={{ color: theme.colors.primary }}>See all</Text>
+          <Ionicons name="arrow-forward" size={16} color={theme.colors.primary} />
+        </Pressable>
       </View>
       {chapters.slice(0, 3).map(chapter => <ChapterCard key={chapter._id} compact chapter={chapter} onPress={() => navigation.navigate('Reader', { chapterId: chapter._id })} />)}
+
+      <Text weight="serif" style={styles.sectionTitle}>Recently Viewed</Text>
+      {recentChapters.length > 0 ? (
+        recentChapters.map(chapter => <ChapterCard key={chapter._id} compact chapter={chapter} onPress={() => navigation.navigate('Reader', { chapterId: chapter._id })} />)
+      ) : (
+        <View style={[styles.empty, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
+          <Ionicons name="time-outline" size={22} color={theme.colors.muted} />
+          <Text style={{ color: theme.colors.muted }}>Open a chapter to see it here.</Text>
+        </View>
+      )}
     </Screen>
   );
 }
@@ -79,27 +115,44 @@ function Stat({ icon, value, label }: { icon: string; value: number; label: stri
   const theme = useAppSelector(state => (state.preferences.theme === 'dark' ? darkTheme : lightTheme));
   return (
     <View style={[styles.stat, { backgroundColor: theme.colors.card, borderColor: theme.colors.border }]}>
-      <Ionicons name={icon} size={22} color={theme.colors.primary} />
+      <Ionicons name={icon} size={21} color={theme.colors.primary} />
       <Text weight="bold" style={{ color: theme.colors.primary, marginTop: 8 }}>{value}</Text>
-      <Text style={{ color: theme.colors.muted, fontSize: 12 }}>{label}</Text>
+      <Text style={{ color: theme.colors.muted, fontSize: 11 }}>{label}</Text>
+    </View>
+  );
+}
+
+function Badge({ icon, label }: { icon: string; label: string }) {
+  const theme = useAppSelector(state => (state.preferences.theme === 'dark' ? darkTheme : lightTheme));
+  return (
+    <View style={[styles.badge, { backgroundColor: theme.colors.primarySoft }]}>
+      <Ionicons name={icon} size={12} color={theme.colors.primary} />
+      <Text weight="bold" style={{ color: theme.colors.primary, fontSize: 11 }}>{label}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  hero: { flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 22 },
-  cover: { width: 58, height: 76, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  heroText: { flex: 1 },
+  topBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 },
+  pageTitle: { fontSize: 28, lineHeight: 34 },
+  iconButton: { width: 38, height: 38, borderWidth: 1, borderRadius: 19, alignItems: 'center', justifyContent: 'center' },
+  bookCard: { borderWidth: 1, borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 14, marginBottom: 14 },
+  cover: { width: 66, height: 88, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  bookBody: { flex: 1 },
   kicker: { fontSize: 11, letterSpacing: 1.2, fontWeight: '700' },
-  title: { fontSize: 25, lineHeight: 32 },
-  themeButton: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
+  title: { fontSize: 24, lineHeight: 31 },
+  badges: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10 },
+  badge: { flexDirection: 'row', alignItems: 'center', gap: 4, borderRadius: 12, paddingHorizontal: 8, paddingVertical: 5 },
   stats: { flexDirection: 'row', gap: 10, marginBottom: 16 },
-  stat: { flex: 1, borderWidth: 1, borderRadius: 12, alignItems: 'center', paddingVertical: 18 },
+  stat: { flex: 1, borderWidth: 1, borderRadius: 12, alignItems: 'center', paddingVertical: 14 },
   sectionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, marginBottom: 12 },
-  sectionTitle: { fontSize: 18 },
-  quote: { borderRadius: 14, padding: 22, marginVertical: 16 },
-  quoteKicker: { color: '#fff4d7', fontWeight: '700', letterSpacing: 1.2, fontSize: 12 },
-  quoteText: { color: '#fff', fontSize: 20, lineHeight: 29, marginVertical: 12 },
+  sectionTitle: { fontSize: 18, marginBottom: 12 },
+  linkButton: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 36, paddingLeft: 12 },
+  quote: { borderRadius: 14, padding: 20, marginVertical: 16 },
+  quoteKicker: { color: '#dbeafe', fontWeight: '700', letterSpacing: 1.2, fontSize: 12 },
+  quoteText: { color: '#fff', fontSize: 19, lineHeight: 28, marginVertical: 12 },
   quoteAuthor: { color: '#fff' },
-  tip: { borderWidth: 1, borderRadius: 12, padding: 16, marginBottom: 16 }
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 18 },
+  chip: { borderWidth: 1, borderRadius: 18, paddingHorizontal: 14, paddingVertical: 8 },
+  empty: { borderWidth: 1, borderRadius: 12, padding: 16, alignItems: 'center', gap: 8, marginBottom: 12 }
 });
